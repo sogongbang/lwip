@@ -30,6 +30,7 @@ if(EXISTS ${LWIP_MBEDTLSDIR}/CMakeLists.txt)
     )
     set (LWIP_MBEDTLS_INCLUDE_DIRS
         ${LWIP_MBEDTLSDIR}/include
+        ${LWIP_MBEDTLSDIR}/crypto/include
     )
     set (LWIP_MBEDTLS_LINK_LIBRARIES
         mbedtls
