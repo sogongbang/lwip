@@ -141,6 +141,8 @@ typedef struct _httpc_connection {
 
 err_t httpc_get_file(const ip_addr_t* server_addr, u16_t port, const char* uri, const httpc_connection_t *settings,
                      altcp_recv_fn recv_fn, void* callback_arg, httpc_state_t **connection);
+err_t httpc_get_file2(const ip_addr_t* server_addr, const char* server_name, u16_t port, const char* uri, const httpc_connection_t *settings,
+                     altcp_recv_fn recv_fn, void* callback_arg, httpc_state_t **connection);
 err_t httpc_get_file_dns(const char* server_name, u16_t port, const char* uri, const httpc_connection_t *settings,
                      altcp_recv_fn recv_fn, void* callback_arg, httpc_state_t **connection);
 
