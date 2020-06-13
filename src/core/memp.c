@@ -450,9 +450,9 @@ void
 memp_show_state(memp_t type)
 {
 #if MEMP_STATS
-	const struct memp_desc *desc = memp_pools[type];
-	LWIP_DEBUGF(MEMP_DEBUG | LWIP_DBG_TRACE,
-		  ("memp_show_state: desc = %p size %"U16_F" err %"U16_F" used %"U16_F" avail %"U16_F" max %"U16_F"\n",
-				  (void *)desc, desc->size, desc->stats->err, desc->stats->used, desc->stats->avail, desc->stats->max));
+    const struct memp_desc *desc = memp_pools[type];
+    LWIP_DEBUGF(MEMP_DEBUG | LWIP_DBG_TRACE,
+          ("memp_show_state: desc = %p size %"U16_F" err %"U16_F" used %"SZT_F" avail %"SZT_F" max %"SZT_F"\n",
+                  (void *)desc, desc->size, desc->stats->err, desc->stats->used, desc->stats->avail, desc->stats->max));
 #endif
 }
