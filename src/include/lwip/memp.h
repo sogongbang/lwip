@@ -147,6 +147,7 @@ void *memp_malloc_fn(memp_t type, const char* file, const int line);
 void *memp_malloc(memp_t type);
 #endif
 void  memp_free(memp_t type, void *mem);
+void  memp_show_state(memp_t type);
 
 #ifdef __cplusplus
 }

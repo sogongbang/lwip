@@ -241,6 +241,7 @@ pbuf_alloc(pbuf_layer layer, u16_t length, pbuf_type type)
       do {
         u16_t qlen;
         q = (struct pbuf *)memp_malloc(MEMP_PBUF_POOL);
+        memp_show_state(MEMP_PBUF_POOL);
         if (q == NULL) {
           PBUF_POOL_IS_EMPTY();
           /* free chain so far allocated */

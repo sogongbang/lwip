@@ -314,9 +314,6 @@ httpc_tcp_recv(void *arg, struct altcp_pcb *pcb, struct pbuf *p, err_t r)
       u16_t total_header_len;
       err_t err = http_wait_headers(req->rx_hdrs, &req->hdr_content_len, &total_header_len);
       if (err == ERR_OK) {
-        struct pbuf *q;
-        /* full header received, send window update for header bytes and call into client callback */
-        altcp_recved(pcb, total_header_len);
         if (req->conn_settings) {
           if (req->conn_settings->headers_done_fn) {
             err = req->conn_settings->headers_done_fn(req, req->callback_arg, req->rx_hdrs, total_header_len, req->hdr_content_len);
@@ -325,24 +322,29 @@ httpc_tcp_recv(void *arg, struct altcp_pcb *pcb, struct pbuf *p, err_t r)
             }
           }
         }
-        /* hide header bytes in pbuf */
-        q = pbuf_free_header(req->rx_hdrs, total_header_len);
-        p = q;
-        req->rx_hdrs = NULL;
-        /* go on with data */
+        altcp_recved(pcb, p->tot_len);
+        pbuf_free(req->rx_hdrs);
         req->parse_state = HTTPC_PARSE_RX_DATA;
+        req->rx_hdrs = NULL;
+      }
+      else {
+        altcp_recved(pcb, p->tot_len);
       }
     }
+    else {
+      altcp_recved(pcb, p->tot_len);
+    }
   }
-  if ((p != NULL) && (req->parse_state == HTTPC_PARSE_RX_DATA)) {
+  else {
     req->rx_content_len += p->tot_len;
     if (req->recv_fn != NULL) {
-      /* directly return here: the connection migth already be aborted from the callback! */
-      return req->recv_fn(req->callback_arg, pcb, p, r);
-    } else {
-      altcp_recved(pcb, p->tot_len);
-      pbuf_free(p);
+      err_t err = req->recv_fn(req->callback_arg, pcb, p, r);
+      if (err != ERR_OK) {
+        return httpc_close(req, HTTPC_RESULT_LOCAL_ABORT, req->rx_status, err);
+      }
     }
+    altcp_recved(pcb, p->tot_len);
+    pbuf_free(p);
   }
   return ERR_OK;
 }
